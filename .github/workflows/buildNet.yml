@@ -7,11 +7,35 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+  build-on-linux:
+    runs-on: ubuntu-latest
     strategy:
       matrix: #define variations of a job so GitHub Actions can run the same job multiple time
-        os: [ubuntu-latest, windows-latest]
+        dotnet-version: ["6.0.x", "7.0.x", "8.0.x"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 # - Reusable actions - are prebuilt actions.
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
+  build-on-windows:
+    runs-on: windows-latest
+    needs: build-on-linux
+    strategy:
+      matrix: #define variations of a job so GitHub Actions can run the same job multiple time
         dotnet-version: ["6.0.x", "7.0.x", "8.0.x"]
 
     steps:
