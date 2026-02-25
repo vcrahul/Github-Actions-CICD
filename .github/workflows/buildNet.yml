@@ -34,6 +34,8 @@ jobs:
   build-on-windows:
     runs-on: windows-latest
     needs: build-on-linux
+    environment:
+      name: windows #this is defined in settings tab and approvers are added for this stage there
     strategy:
       matrix: #define variations of a job so GitHub Actions can run the same job multiple time
         dotnet-version: ["6.0.x", "7.0.x", "8.0.x"]
