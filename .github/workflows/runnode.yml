@@ -1,0 +1,25 @@
+name: Node.js CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy: #define variations of a job so GitHub Actions can run the same job multiple time
+      matrix:
+        node-version: [16, 18, 20]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 # - Reusable actions - are prebuilt actions.
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version}}
+
+      - name: Install dependencies
+        run: npm Install
+
+      - name: Run Tests
+        run: npm test
